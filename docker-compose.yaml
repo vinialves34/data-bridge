@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: databridge-postgres
+    environment:
+      POSTGRES_USER: databridge_user
+      POSTGRES_PASSWORD: databridge_pass
+      POSTGRES_DB: source_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:8
+    container_name: databridge-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: databridge_user
+      MONGO_INITDB_ROOT_PASSWORD: databridge_pass
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  postgres_data:
+  mongodb_data:
