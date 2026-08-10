@@ -1,0 +1,31 @@
+services:
+  api:
+    build: .
+    container_name: databridge_api
+    ports:
+      - "3000:3000"
+    environment:
+      POSTGRES_URL: postgresql://databridge_user:databridge_pass@postgres:5432/databridge
+      MONGODB_URL: mongodb://mongodb:27017
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - postgres
+      - mongodb
+
+  postgres:
+    image: postgres
+    container_name: pg_databridge
+    environment:
+      POSTGRES_USER: databridge_user
+      POSTGRES_PASSWORD: databridge_pass
+      POSTGRES_DB: databridge
+    ports:
+      - "5432:5432"
+
+  mongodb:
+    image: mongo
+    container_name: mongo_databridge
+    ports:
+      - "27017:27017"
