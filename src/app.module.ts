@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
+import { DatabasePlaygroundService } from './database/database-playground.service';
 
 @Module({
   imports: [
@@ -9,7 +8,7 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [DatabasePlaygroundService],
 })
 export class AppModule {}
