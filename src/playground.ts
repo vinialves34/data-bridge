@@ -8,9 +8,11 @@ async function bootstrap() {
   try {
     const databasePlayground = app.get(DatabasePlaygroundService);
 
-    const customers = await databasePlayground.getPostgresCustomers();
+    // const customers = await databasePlayground.getPostgresCustomers();
+    const batch = await databasePlayground.getPostgresDataBatch();
 
-    console.table(customers);
+    // console.table(customers);
+    console.log(batch);
   } finally {
     await app.close();
   }
