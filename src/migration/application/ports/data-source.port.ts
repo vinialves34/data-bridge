@@ -1,5 +1,6 @@
-import { DataRecord } from '../../domain/types/data-record.type';
+import { ReadBatchOptions } from '../../domain/types/read-batch-options.type';
+import { DataBatch } from '../../domain/types/data-batch.type';
 
 export interface DataSource {
-  readBatch(resource: string): Promise<DataRecord[]>;
+  readBatch(options: ReadBatchOptions): Promise<DataBatch>;
 }

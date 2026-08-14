@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Client } from 'pg';
 import { MongoClient } from 'mongodb';
+import { DataBatch } from 'src/migration/domain/types/data-batch.type';
+import { PostgresSourceAdapter } from 'src/migration/infrastructure/database/postgres/postgres-source.adapter';
 
 type CustomerRow = {
   id: number;
@@ -14,7 +16,10 @@ type CustomerRow = {
 
 @Injectable()
 export class DatabasePlaygroundService {
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly postgresSource: PostgresSourceAdapter,
+  ) {}
 
   async testPostgresConnection(): Promise<void> {
     const connection = new Client({
@@ -72,5 +77,13 @@ export class DatabasePlaygroundService {
     } finally {
       await connection.end();
     }
+  }
+
+  async getPostgresDataBatch(): Promise<DataBatch> {
+    return this.postgresSource.readBatch({
+      resource: 'customers',
+      cursorField: 'id',
+      batchSize: 2,
+    });
   }
 }
