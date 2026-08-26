@@ -4,6 +4,7 @@ import { Client } from 'pg';
 import { MongoClient } from 'mongodb';
 import { DataBatch } from 'src/migration/domain/types/data-batch.type';
 import { PostgresSourceAdapter } from 'src/migration/infrastructure/database/postgres/postgres-source.adapter';
+import { MongoDestinationAdapter } from 'src/migration/infrastructure/database/mongodb/mongodb-destination.adapter';
 
 type CustomerRow = {
   id: number;
@@ -19,6 +20,7 @@ export class DatabasePlaygroundService {
   constructor(
     private readonly configService: ConfigService,
     private readonly postgresSource: PostgresSourceAdapter,
+    private readonly mongoDestination: MongoDestinationAdapter,
   ) {}
 
   async testPostgresConnection(): Promise<void> {
@@ -84,6 +86,22 @@ export class DatabasePlaygroundService {
       resource: 'customers',
       cursorField: 'id',
       batchSize: 2,
+    });
+  }
+
+  async migratePostgresBatchToMongo(): Promise<void> {
+    const batch = await this.postgresSource.readBatch({
+      resource: 'customers',
+      cursorField: 'id',
+      batchSize: 2,
+    });
+
+    await this.mongoDestination.writeBatch('customers', batch.records);
+
+    console.log({
+      migrateRecords: batch.records.length,
+      nextCursor: batch.nextCursor,
+      hasMore: batch.hasMore,
     });
   }
 }

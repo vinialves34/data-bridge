@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from '../../../application/ports/data-source.port';
 import { DataRecord } from '../../../domain/types/data-record.type';
 import { ReadBatchOptions } from '../../../domain/types/read-batch-options.type';
-import { validateSqlIdentifiers } from '../../../../../shared/utils/validators/sql-identifiers.validate';
+import { validateDbIdentifiers } from '../../../../../shared/utils/validators/db-identifiers.validate';
 import { PostgresConnectionProvider } from './postgres-connection.provider';
 import { DataBatch } from 'src/migration/domain/types/data-batch.type';
 
@@ -15,13 +15,10 @@ export class PostgresSourceAdapter implements DataSource {
   async readBatch(options: ReadBatchOptions): Promise<DataBatch> {
     const { resource, batchSize, cursorField, cursor } = options;
 
-    const sqlIdentifiersIsValid = validateSqlIdentifiers([
-      resource,
-      cursorField,
-    ]);
+    const dbIdentifiersIsValid = validateDbIdentifiers([resource, cursorField]);
 
-    if (!sqlIdentifiersIsValid) {
-      throw new Error('There are invalid SQL indicators.');
+    if (!dbIdentifiersIsValid) {
+      throw new Error('There are invalid database indicators.');
     }
 
     if (!Number.isInteger(batchSize) || batchSize <= 0) {
