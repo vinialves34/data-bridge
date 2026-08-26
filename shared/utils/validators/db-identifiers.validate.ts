@@ -1,4 +1,4 @@
-export function validateSqlIdentifiers(identifiers: string[]): boolean {
+export function validateDbIdentifiers(identifiers: string[]): boolean {
   const identifierRegex = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 
   return identifiers.every(
